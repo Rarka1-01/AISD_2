@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <stack>
+#include <queue>
 
 using namespace std;
 
@@ -41,9 +42,16 @@ public:
 
 	}
 
-	int size();
+	int size()
+	{
+		return sz(root) - 1;
+	}
 
-	void clear();
+	void clear()
+	{
+		clr(root);
+		root = NULL;
+	}
 
 	bool isEmpty();
 
@@ -125,6 +133,103 @@ public:
 		else
 		{
 			stack<int> k = getStackKeys(key);
+			int a = 0; // -1 = left, 1 = right
+			node<T>* tmp = root;
+			node<T>* kid;
+
+			while (k.top() != key)
+			{
+				if (k.top() % 2 == 0)
+					tmp = tmp->right;
+				else
+					tmp = tmp->left;
+
+				k.pop();
+			}
+			
+			if (key != 0)
+			{
+				if (key % 2 == 0)
+				{
+					kid = tmp->right;
+					a = 1;
+				}
+				else
+				{
+					kid = tmp->left;
+					a = -1;
+				}
+
+				if (kid->right == NULL && kid->left == NULL)
+				{
+					delete kid;
+					switch (a)
+					{
+					case 1: tmp->right = NULL; break;
+					case -1: tmp->left = NULL;  break;
+					}
+				}
+				else if (kid->right == NULL && kid->left != NULL)
+				{
+					switch (a)
+					{
+					case 1: tmp->right = kid->left; break;
+					case -1: tmp->left = kid->left;  break;
+					}
+
+					delete kid;
+					updateKeys(root);
+				}
+				else if (kid->right != NULL && kid->left == NULL)
+				{
+					switch (a)
+					{
+					case 1: tmp->right = kid->right; break;
+					case -1: tmp->left = kid->right;  break;
+					}
+
+					delete kid;
+					updateKeys(root);
+				}
+				else
+				{
+					node<T>* ins = kid->left;
+
+					switch (a)
+					{
+					case 1: tmp->right = kid->right; break;
+					case -1: tmp->left = kid->right; break;
+					}
+
+					delete kid;
+
+					updateKeys(root);
+
+					toStackVal(ins);
+
+					while (!vlsTmp.empty())
+					{
+						this->insert(vlsTmp.front(), getFirstFreeKey());
+						vlsTmp.pop();
+					}
+				}
+
+			}
+			else
+			{
+				toStackVal(root);
+				vlsTmp.pop();
+
+				this->clear();
+				int i = 0;
+				while (!vlsTmp.empty())
+				{
+					this->insert(vlsTmp.front(), i);
+					i++;
+					vlsTmp.pop();
+				}
+			}
+			return true;
 		}
 	}
 
@@ -135,7 +240,10 @@ public:
 
 	void print()
 	{
-		pr(root);
+		if (root == NULL)
+			cout << "Tree is empty!" << endl;
+		else
+			pr(root);
 		cout << endl;
 	}
 
@@ -151,16 +259,71 @@ public:
 private:
 	node<T>* root;
 	int cr;
+	queue<T> vlsTmp;
 
-	void pr(node<T>* tmp)
+	void clr(node<T>* tmp)
+	{
+		
+		if (tmp->left != NULL)
+			clr(tmp->left);
+
+		if (tmp->right != NULL)
+			clr(tmp->right);
+
+		delete tmp;
+	
+	}
+
+	int getFirstFreeKey()
+	{
+		int i = 0;
+		while (seekKey(i))
+			i++;
+
+		return i;
+	}
+
+	void toStackVal(node<T>* tmp)
 	{
 		if (tmp == NULL)
 			return;
 		else
-			cout << tmp->val << " ";
+			vlsTmp.push(tmp->val);
 
-		pr(tmp->left);
-		pr(tmp->right);
+		toStackVal(tmp->right);
+		toStackVal(tmp->left);
+	}
+
+	int sz(node<T>* tmp)
+	{
+		if (tmp == 0)
+			return 1;
+		else
+			return sz(tmp->left) + sz(tmp->right);
+	}
+
+	void updateKeys(node<T>* tmp, int pr = 0, int s = 0)
+	{
+		if (tmp == NULL)
+			return;
+		else
+			tmp->key = pr * 2 + s;
+
+		updateKeys(tmp->left, tmp->key, 1);
+		updateKeys(tmp->right, tmp->key, 2);
+	}
+
+	void pr(node<T>* tmp, int n = 0)
+	{
+		if (tmp != NULL)
+		{
+			pr(tmp->right, n + 5);
+
+			for (int i = 0; i < n; i++)
+				cout << " ";
+			cout << tmp->val << endl;
+			pr(tmp->left, n + 5);
+		}
 	}
 
 	void prK(node<T>* tmp)
