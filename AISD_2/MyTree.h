@@ -413,7 +413,84 @@ public:
 		return count;
 	}
 
-	//ÈÒÅÐÎÒÎÐÛ!
+	//----------------------------------------------
+	void updateForIterator()
+	{
+		this->arr = (node<T>**)malloc(this->size() * sizeof(node<T>*));
+		this->itn = 0;
+		treeToVector(this->root);
+	}
+	
+	struct Iterator
+	{
+		using iterator_category = std::forward_iterator_tag;
+		using defferance_type = std::ptrdiff_t;
+		using value_type = T;
+		using pointer = node<T>**;
+		using reference = node<T>*;
+
+		Iterator(pointer ptr) :m_ptr(ptr) {}
+
+		reference operator*() const { return *m_ptr; }
+		pointer operator->() { return m_ptr; }
+
+		Iterator& operator++() { m_ptr++; return *this; }
+		Iterator& operator--() { m_ptr--; return *this; }
+
+		friend bool operator==(const Iterator& a, const Iterator& b) { return a.m_ptr == b.m_ptr; };
+		friend bool operator!=(const Iterator& a, const Iterator& b) { return a.m_ptr != b.m_ptr; };
+
+
+	private:
+		pointer m_ptr;
+	};
+
+	struct RIterator
+	{
+		using iterator_category = std::forward_iterator_tag;
+		using defferance_type = std::ptrdiff_t;
+		using value_type = T;
+		using pointer = node<T>**;
+		using reference = node<T>*;
+
+		RIterator(pointer ptr) :m_ptr(ptr) {}
+
+		reference operator*() const { return *m_ptr; }
+		pointer operator->() { return m_ptr; }
+
+		RIterator& operator--() { m_ptr++; return *this; }
+		RIterator& operator++() { m_ptr--; return *this; }
+
+		friend bool operator==(const RIterator& a, const RIterator& b) { return a.m_ptr == b.m_ptr; };
+		friend bool operator!=(const RIterator& a, const RIterator& b) { return a.m_ptr != b.m_ptr; };
+
+
+	private:
+		pointer m_ptr;
+	};
+
+	Iterator begin()
+	{
+		return Iterator(&(this->arr[0]));
+	}
+
+	Iterator end()
+	{
+		int s = size();
+		return Iterator(&(this->arr[s]));
+	}
+
+	RIterator rbegin()
+	{
+		int s = size();
+		return RIterator(&(this->arr[s - 1]));
+	}
+
+	RIterator rend()
+	{
+		return RIterator(&(this->arr[-1]));
+	}
+	//----------------------------------------------
 
 	int GetCountView()
 	{
@@ -422,7 +499,20 @@ public:
 
 private:
 	node<T>* root;
+	node<T>** arr;
+	int itn = 0;
 	int cr;
+
+	void treeToVector(node<T>* tmp)
+	{
+		if (tmp != NULL)
+		{
+			treeToVector(tmp->left);
+			this->arr[itn] = tmp;
+			itn++;
+			treeToVector(tmp->right);
+		}
+	}
 
 	node<T>* copy(node<T>* r1, node<T>* r2)
 	{
