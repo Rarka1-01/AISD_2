@@ -47,6 +47,7 @@ public:
 
 	~MyTree()
 	{
+		this->cr = 0;
 		this->clear();
 	}
 
@@ -58,6 +59,7 @@ public:
 
 	void clear()
 	{
+		this->cr = 1;
 		clr(root);
 		root = NULL;
 	}
@@ -70,15 +72,19 @@ public:
 
 	bool changeElement(T nEl, int key)
 	{
+		this->cr = 0;
+
 		if (!seekKey(key))
 			return false;
 		else
 		{
 			stack<int> k = getStackKeys(key);
+			this->cr++;
 			node<T>* tmp = root;
 
 			while (!k.empty() && k.top() != 0)
 			{
+				this->cr++;
 				if (k.top() % 2 == 0)
 					tmp = tmp->right;
 				else
@@ -94,6 +100,8 @@ public:
 
 	T* value(int key)
 	{
+		this->cr = 0;
+
 		if (seekKey(key))
 		{
 			stack<int> k = getStackKeys(key);
@@ -101,6 +109,7 @@ public:
 
 			while (!k.empty() && k.top() != 0)
 			{
+				this->cr++;
 				if (k.top() % 2 == 0)
 					tmp = tmp->right;
 				else
@@ -117,6 +126,8 @@ public:
 
 	bool insert(T nEl, int key)
 	{
+		this->cr = 1;
+
 		if (root == NULL && key == 0)
 		{
 			root = new node<T>(nEl, key);
@@ -144,6 +155,7 @@ public:
 
 			while (!k.empty())
 			{
+				this->cr++;
 				if (k.top() % 2 == 0)
 					tmp = tmp->right;
 				else
@@ -156,13 +168,14 @@ public:
 				tmp->right = new node<T>(nEl, key);
 			else
 				tmp->left = new node<T>(nEl, key);
-
+			this->cr++;
 			return true;
 		}
 	}
 
 	int* remove(int key)
 	{
+		this->cr = 0;
 		int* keys = new int[2];
 		if (seekKey(key) == 0)
 			return NULL;
@@ -179,6 +192,7 @@ public:
 
 				while (k.top() != key)
 				{
+					this->cr++;
 					if (k.top() % 2 == 0)
 						tmp = tmp->right;
 					else
@@ -198,6 +212,8 @@ public:
 					a = -1;
 				}
 
+				this->cr++;
+
 				if (kid->right == NULL && kid->left == NULL)
 				{
 					delete kid;
@@ -206,7 +222,7 @@ public:
 					case 1: tmp->right = NULL; break;
 					case -1: tmp->left = NULL;  break;
 					}
-
+					this->cr++;
 					keys[1] = -1;
 				}
 				else if (kid->right == NULL && kid->left != NULL)
@@ -218,7 +234,7 @@ public:
 					case 1: tmp->right = kid->left; tmp->right->key = keys[0]; break;
 					case -1: tmp->left = kid->left; tmp->left->key = keys[0]; break;
 					}
-
+					this->cr++;
 					delete kid;
 				}
 				else if (kid->right != NULL && kid->left == NULL)
@@ -230,7 +246,7 @@ public:
 					case 1: tmp->right = kid->right; tmp->right->key = keys[0]; break;
 					case -1: tmp->left = kid->right; tmp->left->key = keys[0]; break;
 					}
-
+					this->cr++;
 					delete kid;
 				}
 				else
@@ -240,6 +256,7 @@ public:
 
 					while (!(nt->right == NULL && nt->left == NULL))
 					{
+						this->cr++;
 						preNT = nt;
 						if (nt->left != NULL)
 							nt = nt->left;
@@ -247,11 +264,14 @@ public:
 							nt = nt->right;
 					}
 
-					if(preNT != NULL)
+					if (preNT != NULL)
+					{
 						if (preNT->left == nt)
 							preNT->left = NULL;
 						else
 							preNT->right = NULL;
+						this->cr++;
+					}
 
 					nt->right = kid->right;
 
@@ -267,7 +287,7 @@ public:
 					case 1: tmp->right = nt; tmp->right->key = keys[0]; break;
 					case -1: tmp->left = nt; tmp->left->key = keys[0]; break;
 					}
-
+					this->cr++;
 				}
 
 				
@@ -279,6 +299,7 @@ public:
 					delete root;
 					root = NULL;
 					keys[1] = -1;
+					this->cr++;
 				}
 				else if (root->left == NULL && root->right != NULL)
 				{
@@ -288,6 +309,7 @@ public:
 					root = tmp;
 					root->key = keys[0];
 					keys[1] = tmp->key;
+					this->cr += 2;
 				}
 				else if (root->left != NULL && root->right == NULL)
 				{
@@ -296,6 +318,7 @@ public:
 					keys[1] = tmp->key;
 					root = tmp;
 					root->key = keys[0];
+					this->cr += 2;
 				}
 				else
 				{
@@ -304,6 +327,7 @@ public:
 
 					while (!(nt->left == NULL && nt->right == NULL))
 					{
+						this->cr++;
 						preNT = nt;
 
 						if (nt->left != NULL)
@@ -312,13 +336,17 @@ public:
 							nt = nt->right;
 					}
 
-					if(preNT != NULL)
+					if (preNT != NULL)
+					{
 						if (preNT->left == nt)
 							preNT->left = NULL;
 						else
 							preNT->right = NULL;
+						this->cr++;
+					}
 
 					nt->right = root->right;
+					this->cr++;
 
 					if(root->left != nt)
 						nt->left = root->left;
@@ -329,7 +357,7 @@ public:
 
 					root = nt;
 					root->key = keys[0];
-					
+					this->cr++;
 				}
 			}
 
@@ -356,7 +384,34 @@ public:
 		cout << endl;
 	}
 
-	int extraQ(int key);
+	int extraQ(int key)
+	{
+		this->cr = 0;
+		int lvl = -1;
+		
+		do
+		{
+			lvl++;
+		} while (!(pow(2, lvl) - 1 <= key && pow(2,lvl+1) - 2 >= key));
+		
+		int left = pow(2, lvl) - 1, right = pow(2, lvl + 1) - 2, size_arr = right - left + 1;
+
+		node<T>** tmp = (node<T>**)malloc(sizeof(node<T>*) * size_arr);
+
+		for (int i = left; i <= right; i++)
+			tmp[i - left] = seekReturn(i);
+		
+		int count = 0;
+
+		for (int i = 0; i < size_arr; i++)
+			if (tmp[i] != NULL)
+				if (tmp[i]->key <= key)
+					count += sz(tmp[i]) - 2;
+				else
+					count += sz(tmp[i]) - 1;
+
+		return count;
+	}
 
 	//ÈÒÅÐÎÒÎÐÛ!
 
@@ -492,13 +547,40 @@ private:
 			k.pop();
 		}
 
+		this->cr++;
 		if (tmp == NULL || key < 0)
 			f = false;
 		
+		this->cr++;
 		if (root == NULL)
 			f = false;
 
 		return f;
+	}
+
+	node<T>* seekReturn(int key)
+	{
+		stack<int> k = getStackKeys(key);
+		
+		node<T>* tmp = this->root;
+
+		if (key == 0)
+			return tmp;
+
+		this->cr++;
+
+		while (tmp != NULL && !k.empty())
+		{
+			this->cr++;
+			if (k.top() % 2 == 0)
+				tmp = tmp->right;
+			else
+				tmp = tmp->left;
+
+			k.pop();
+		}
+
+		return tmp;
 	}
 
 	stack<int> getStackKeys(int key)
