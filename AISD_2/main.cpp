@@ -237,7 +237,7 @@ void menu()
 		cout << "8. Вывести ключи" << endl;
 		cout << "9. Вывести ключи больше заданного" << endl;
 		cout << "10. Очистить дерево" << endl;
-		cout << "11. Работать с итероторами" << endl;
+		cout << "11. Работать с итераторами" << endl;
 		cout << "12. Выход" << endl;
 
 		cin >> ch;
@@ -460,7 +460,7 @@ int main()
 	system("chcp 1251");
 	system("cls");
 
-	if (false)
+	if (true)
 	{
 		menu();
 	}
