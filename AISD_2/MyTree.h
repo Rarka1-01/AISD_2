@@ -42,6 +42,7 @@ public:
 	MyTree(MyTree& r)
 	{
 		this->cr = 0;
+		this->clear();
 		root = copy(root, r.root);
 	}
 
