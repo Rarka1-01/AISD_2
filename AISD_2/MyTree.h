@@ -418,7 +418,7 @@ public:
 	{
 		this->arr = (node<T>**)malloc(this->size() * sizeof(node<T>*));
 		this->itn = 0;
-		treeToVector(this->root);
+		treeToArray(this->root);
 	}
 	
 	struct Iterator
@@ -477,7 +477,7 @@ public:
 	Iterator end()
 	{
 		int s = size();
-		return Iterator(&(this->arr[s]));
+		return Iterator(&(this->arr[s - 1]));
 	}
 
 	RIterator rbegin()
@@ -488,7 +488,7 @@ public:
 
 	RIterator rend()
 	{
-		return RIterator(&(this->arr[-1]));
+		return RIterator(&(this->arr[0]));
 	}
 	//----------------------------------------------
 
@@ -503,14 +503,14 @@ private:
 	int itn = 0;
 	int cr;
 
-	void treeToVector(node<T>* tmp)
+	void treeToArray(node<T>* tmp)
 	{
 		if (tmp != NULL)
 		{
-			treeToVector(tmp->left);
+			treeToArray(tmp->left);
 			this->arr[itn] = tmp;
 			itn++;
-			treeToVector(tmp->right);
+			treeToArray(tmp->right);
 		}
 	}
 
