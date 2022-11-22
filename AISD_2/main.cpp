@@ -406,6 +406,52 @@ void menu()
 
 void forTest()
 {
+	cout << "123321" << endl;
+	ofstream sl_i("D:/FFFFFFFFFFFFFFFFFFFFFFFFFFFF/sl_i.txt"),
+		sl_r("D:/FFFFFFFFFFFFFFFFFFFFFFFFFFFF/sl_r.txt"),
+		vr_i("D:/FFFFFFFFFFFFFFFFFFFFFFFFFFFF/vr_i.txt"),
+		vr_r("D:/FFFFFFFFFFFFFFFFFFFFFFFFFFFF/vr_r.txt");
+
+	MyTree<int> sl;
+	
+	for (int i = 1; i <= 19; i++)
+	{
+		int tmp_c = 0;
+		sl.clear();
+
+		for (int j = 0; j < pow(2, i); j++)
+		{
+			sl.insert(rand() % 100, j);
+			tmp_c += sl.GetCountView();
+		}
+
+		sl_i << tmp_c << endl;
+
+		sl.remove(pow(2, i) / 2);
+		tmp_c = sl.GetCountView();
+
+		sl_r << tmp_c << endl;
+	}
+
+	for (int i = 1; i <= 19; i++)
+	{
+		int tmp_c = 0;
+		sl.clear();
+
+		for (int j = 0; j < pow(2, i); j++)
+		{
+			sl.insert(rand() % 100, pow(2, j) - 1);
+			tmp_c += sl.GetCountView();
+		}
+
+		vr_i << tmp_c << endl;
+
+		sl.remove(pow(2, i) / 2 - 1);
+
+		tmp_c = sl.GetCountView();
+
+		vr_r << tmp_c << endl;
+	}
 
 }
 
@@ -414,7 +460,7 @@ int main()
 	system("chcp 1251");
 	system("cls");
 
-	if (1)
+	if (false)
 	{
 		menu();
 	}
