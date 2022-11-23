@@ -8,7 +8,7 @@ void forIter_1(MyTree<int> m)
 
 	auto it = m.begin();
 	int ch = -1;
-	bool s = true, f = true;
+	int count = m.size(), pos = 1;
 
 	do
 	{
@@ -30,38 +30,27 @@ void forIter_1(MyTree<int> m)
 		case 1: {
 		
 			it = m.begin();
-			s = true;
+			pos = 1;
 		
 		}break;
 		case 2: {
 			it = m.end();
-			f = true;
+			pos = count + 1;
 		}break;
 		case 3: {
-		
-			if (it == m.end())
-				f = false;
 
 			++it;
-
-			if (it == m.begin())
-				s = true;
+			
+			pos++;
 
 		}break;
 		case 4: {
-		
-			if (it == m.begin())
-				s = false;
-
 			--it;
-
-			if (it == m.end())
-				f = true;
-		
+			pos--;
 		}break;
 		case 5: {
 		
-			if (!(s && f))
+			if (!(pos > 0 && pos <= count))
 				cout << "NULL" << endl;
 			else
 				cout << "Ключ: " << (*it)->key << "\nЗначение: " << (*it)->val << endl;
@@ -71,6 +60,7 @@ void forIter_1(MyTree<int> m)
 		case 6: break;
 		default: {
 			cout << "Такого пункта нет в меню" << endl; 
+			system("pause");
 		} break;
 		}
 
@@ -84,7 +74,7 @@ void forIter_2(MyTree<int> m)
 
 	auto it = m.rbegin();
 	int ch = -1;
-	bool s = true, f = true;
+	int count = m.size(), pos = 1;
 
 	do
 	{
@@ -106,38 +96,27 @@ void forIter_2(MyTree<int> m)
 		case 1: {
 
 			it = m.rbegin();
-			s = true;
+			pos = 1;
 
 		}break;
 		case 2: {
 			it = m.rend();
-			f = true;
+			pos = count + 1;
 		}break;
 		case 3: {
 
-			if (it == m.rend())
-				f = false;
-
 			++it;
 
-			if (it == m.rbegin())
-				s = true;
+			pos++;
 
 		}break;
 		case 4: {
-
-			if (it == m.rbegin())
-				s = false;
-
 			--it;
-
-			if (it == m.rend())
-				f = true;
-
+			pos--;
 		}break;
 		case 5: {
 
-			if (!(s && f))
+			if (!(pos > 0 && pos <= count))
 				cout << "NULL" << endl;
 			else
 				cout << "Ключ: " << (*it)->key << "\nЗначение: " << (*it)->val << endl;
@@ -147,6 +126,7 @@ void forIter_2(MyTree<int> m)
 		case 6: break;
 		default: {
 			cout << "Такого пункта нет в меню" << endl;
+			system("pause");
 		} break;
 		}
 

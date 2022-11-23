@@ -42,7 +42,6 @@ public:
 	MyTree(MyTree& r)
 	{
 		this->cr = 0;
-		this->clear();
 		root = copy(root, r.root);
 	}
 
@@ -478,7 +477,7 @@ public:
 	Iterator end()
 	{
 		int s = size();
-		return Iterator(&(this->arr[s - 1]));
+		return Iterator(&(this->arr[s]));
 	}
 
 	RIterator rbegin()
@@ -489,7 +488,7 @@ public:
 
 	RIterator rend()
 	{
-		return RIterator(&(this->arr[0]));
+		return RIterator(&(this->arr[-1]));
 	}
 	//----------------------------------------------
 
