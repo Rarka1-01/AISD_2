@@ -133,6 +133,90 @@ void forIter_2(MyTree<int> m)
 	} while (ch != 6);
 }
 
+void forTest()
+{
+	cout << "Тесты!" << endl;
+	ofstream sl_i("D:/FFFFFFFFFFFFFFFFFFFFFFFFFFFF/sl_i.txt"),
+		sl_r("D:/FFFFFFFFFFFFFFFFFFFFFFFFFFFF/sl_r.txt"),
+		sl_v("D:/FFFFFFFFFFFFFFFFFFFFFFFFFFFF/sl_v.txt"),
+		vr_i("D:/FFFFFFFFFFFFFFFFFFFFFFFFFFFF/vr_i.txt"),
+		vr_r("D:/FFFFFFFFFFFFFFFFFFFFFFFFFFFF/vr_r.txt"),
+		vr_v("D:/FFFFFFFFFFFFFFFFFFFFFFFFFFFF/vr_v.txt");
+
+
+
+	int av_s[3] = { 0, 0 ,0 }, av_v[3] = { 0, 0, 0 };
+
+	for (int i = 1; i < 16; i++)
+	{
+		cout << "Выполняется " << i << " тест" << endl;
+		for (int j = 0; j < 5; j++)
+		{
+			MyTree<int> sl;
+
+			for (int k = 0; k < pow(2, i) - 1; k++)
+			{
+				if (!sl.insert(rand() % 10, rand() % int(pow(2, i) + 10)))
+					k--;
+			}
+
+			int key = rand() % int(pow(2, i) + 10);
+			while (!sl.insert(rand() % 10, key))
+				key = rand() % int(pow(2, i) + 10);
+
+			av_s[0] += sl.GetCountView();
+
+			sl.value(key);
+
+			av_s[1] += sl.GetCountView();
+
+			sl.remove(key);
+
+			av_s[2] += sl.GetCountView();
+		}
+
+		for (int j = 0; j < 5; j++)
+		{
+			MyTree<int> sl;
+			int k = 0;
+			for (k = 0; k < pow(2, i) - 1; k++)
+				sl.insert(rand() % 10, k);
+
+			k++;
+			sl.insert(rand() % 10, k);
+
+			av_v[0] += sl.GetCountView();
+
+			sl.value(k);
+
+			av_v[1] += sl.GetCountView();
+
+			sl.remove(k);
+
+			av_v[2] += sl.GetCountView();
+		}
+
+
+		for (int j = 0; j < 3; j++)
+		{
+			av_s[j] /= 5;
+			av_v[j] /= 5;
+		}
+
+		sl_i << av_s[0] << endl;
+		sl_r << av_s[2] << endl;
+		sl_v << av_s[1] << endl;
+
+		vr_i << av_v[0] << endl;
+		vr_r << av_v[2] << endl;
+		vr_v << av_v[1] << endl;
+
+		cout << "Успех!" << endl << endl;
+
+	}
+
+}
+
 void menu()
 {
 	int ch = -1, size = 0, tmpC = 0, tt, tk;
@@ -179,10 +263,14 @@ void menu()
 	if (ch == 1)
 	{
 		tmpC = 0;
-		for (int i = 0; i < size; i++)
+		m.insert(-1, 10);
+
+		for (int i = 1; i < size; i++)
 		{
-			m.insert(rand() % 10, i);
-			tmpC += m.GetCountView();
+			if (!m.insert(rand() % 10, rand() % (size + 10)))
+				i--;
+			else
+				tmpC += m.GetCountView();
 		}
 	}
 	else
@@ -207,6 +295,7 @@ void menu()
 		system("cls");
 
 		cout << "Выберете пункт: " << endl;
+		cout << "-1. Тестирование деревьев" << endl;
 		cout << "1. Вставить значение" << endl;
 		cout << "2. Удалить по ключу" << endl;
 		cout << "3. Получить значение по ключу" << endl;
@@ -225,6 +314,7 @@ void menu()
 
 		switch (ch)
 		{
+		case -1: forTest(); break;
 		case 1: {
 
 			cout << "Введите вставляемый элемент: ";
@@ -250,9 +340,9 @@ void menu()
 			cout << "Введите ключ: ";
 			cin >> tk;
 
-			int* re = m.remove(tk);
+			bool f = m.remove(tk);
 
-			if (re == NULL)
+			if (!f)
 				cout << "Удаление не произошло, такого ключа нет" << endl;
 			else
 				cout << "Элемент успешно удален" << endl;
@@ -384,68 +474,12 @@ void menu()
 	} while (ch != 12);
 }
 
-void forTest()
-{
-	cout << "123321" << endl;
-	ofstream sl_i("D:/FFFFFFFFFFFFFFFFFFFFFFFFFFFF/sl_i.txt"),
-		sl_r("D:/FFFFFFFFFFFFFFFFFFFFFFFFFFFF/sl_r.txt"),
-		vr_i("D:/FFFFFFFFFFFFFFFFFFFFFFFFFFFF/vr_i.txt"),
-		vr_r("D:/FFFFFFFFFFFFFFFFFFFFFFFFFFFF/vr_r.txt");
-
-	MyTree<int> sl;
-	
-	for (int i = 1; i <= 19; i++)
-	{
-		int tmp_c = 0;
-		sl.clear();
-
-		for (int j = 0; j < pow(2, i); j++)
-		{
-			sl.insert(rand() % 100, j);
-			tmp_c += sl.GetCountView();
-		}
-
-		sl_i << tmp_c << endl;
-
-		sl.remove(pow(2, i) / 2);
-		tmp_c = sl.GetCountView();
-
-		sl_r << tmp_c << endl;
-	}
-
-	for (int i = 1; i <= 19; i++)
-	{
-		int tmp_c = 0;
-		sl.clear();
-
-		for (int j = 0; j < pow(2, i); j++)
-		{
-			sl.insert(rand() % 100, pow(2, j) - 1);
-			tmp_c += sl.GetCountView();
-		}
-
-		vr_i << tmp_c << endl;
-
-		sl.remove(pow(2, i) / 2 - 1);
-
-		tmp_c = sl.GetCountView();
-
-		vr_r << tmp_c << endl;
-	}
-
-}
-
 int main()
 {	
 	system("chcp 1251");
 	system("cls");
 
-	if (true)
-	{
-		menu();
-	}
-	else
-		forTest();
+	menu();
 
 	return 0;
 }
