@@ -48,7 +48,7 @@ public:
 	~MyTree()
 	{
 		this->cr = 0;
-		//this->clear();
+		this->clear();
 	}
 
 	int size()
@@ -60,7 +60,13 @@ public:
 	void clear()
 	{
 		this->cr = 1;
-		clr(*root);
+		this->updateForIterator();
+		
+		for (int i = 0; i < this->itn; i++)
+			delete arr[i];
+
+		delete arr;
+
 		*root = NULL;
 	}
 
@@ -404,22 +410,6 @@ private:
 		}
 		else
 			return NULL;
-	}
-
-	void clr(node<T>* tmp)
-	{
-		if (tmp != NULL)
-		{
-			this->cr++;
-			if (tmp->left != NULL)
-				clr(tmp->left);
-
-			if (tmp->right != NULL)
-				clr(tmp->right);
-
-			delete tmp;
-		}
-	
 	}
 	
 	int sz(node<T>* tmp)

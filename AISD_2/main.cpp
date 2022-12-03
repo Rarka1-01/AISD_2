@@ -479,7 +479,16 @@ int main()
 	system("chcp 1251");
 	system("cls");
 
-	menu();
+	//menu();
+
+	MyTree<int> m;
+
+	for (int i = 0; i < 10; i++)
+		m.insert(i - 5, i);
+
+	m.print();
+	m.clear();
+	m.print();
 
 	return 0;
 }
